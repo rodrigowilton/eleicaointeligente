@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.pk %}Editar{% else %}Cadastrar{% endif %} Coordenador</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>{% if form.instance.pk %}Editar{% else %}Cadastrar{% endif %} Coordenador</h1>
+        <form method="post">
+            {% csrf_token %}
+            {% load bootstrap_filters %}
+            <div class="mb-3">
+                <label for="id_nome" class="form-label">Nome</label>
+                {{ form.nome|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_data_nascimento" class="form-label">Data de Nascimento</label>
+                {{ form.data_nascimento|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_sexo" class="form-label">Sexo</label>
+                {{ form.sexo|add_class:"form-select" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_cpf" class="form-label">CPF</label>
+                {{ form.cpf|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_nome_mae" class="form-label">Nome da Mãe</label>
+                {{ form.nome_mae|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_cep" class="form-label">CEP</label>
+                {{ form.cep|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_logradouro" class="form-label">Logradouro</label>
+                {{ form.logradouro|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_numero" class="form-label">Número</label>
+                {{ form.numero|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_complemento" class="form-label">Complemento</label>
+                {{ form.complemento|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_bairro" class="form-label">Bairro</label>
+                {{ form.bairro|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_cidade" class="form-label">Cidade</label>
+                {{ form.cidade|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_uf" class="form-label">UF</label>
+                {{ form.uf|add_class:"form-select" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_email" class="form-label">E-mail</label>
+                {{ form.email|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_telefone" class="form-label">Telefone</label>
+                {{ form.telefone|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_usuario" class="form-label">Usuário</label>
+                {{ form.usuario|add_class:"form-control" }}
+            </div>
+            <div class="mb-3">
+                <label for="id_senha" class="form-label">Senha</label>
+                {{ form.senha|add_class:"form-control" }}
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'coordenador_list' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.6/dist/inputmask.min.js"></script>
+    <script>
+        // Garantir que o Inputmask seja aplicado após o carregamento da página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Aplicar máscara de CPF
+            Inputmask("99999-999").mask("#id_cep");
+
+            // Aplicar máscara de CPF
+            Inputmask("999.999.999-99").mask("#id_cpf");
+
+            // Aplicar máscara de telefone
+            Inputmask("(99) 99999-9999").mask("#id_telefone");
+
+            // Aplicar máscara de data
+            Inputmask("99/99/9999").mask("#id_data_nascimento");
+        });
+
+        document.getElementById('id_cep').addEventListener('blur', function() {
+            var cep = this.value.replace(/\D/g, '');
+            if (cep.length === 8) {
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            document.getElementById('id_logradouro').value = data.logradouro;
+                            document.getElementById('id_bairro').value = data.bairro;
+                            document.getElementById('id_cidade').value = data.localidade;
+                            document.getElementById('id_uf').value = data.uf;
+                        } else {
+                            alert('CEP não encontrado.');
+                        }
+                    })
+                    .catch(error => console.error('Erro ao buscar CEP:', error));
+            }
+        });
+    </script>
+</body>
+</html>
