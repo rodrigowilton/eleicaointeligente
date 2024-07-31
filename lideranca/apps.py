@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class LiderencaConfig(AppConfig):
+class LiderancaConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'liderenca'
+    name = 'lideranca'
