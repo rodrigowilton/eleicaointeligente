@@ -48,11 +48,33 @@ def generate_contact_graph():
 
     return image_base64, total_contatos
 
+
 def index(request):
     contact_graph, total_contacts = generate_contact_graph()
+
+    # Obtenha todos os contatos
+    contatos = Contato.objects.all()
+
+    # Calcule o total de contatos
+    total_contatos = contatos.count()
+
+    # Calcule a contagem de contatos por bairro
+    bairros_contagem = contatos.values('bairro').annotate(contagem=Count('bairro'))
+
+    # Calcule a porcentagem de contatos por bairro
+    bairros_percentuais = [
+        {
+            'nome': bairro['bairro'],
+
+            'percentual': (bairro['contagem'] / total_contatos) * 100
+        }
+        for bairro in bairros_contagem
+    ]
+
     return render(request, 'principal.html', {
         'contact_graph': contact_graph,
-        'total_contacts': total_contacts
+        'total_contacts': total_contacts,
+        'bairros': bairros_percentuais,
     })
 
 def meta_create(request):
