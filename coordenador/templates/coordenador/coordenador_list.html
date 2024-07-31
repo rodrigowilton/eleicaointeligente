@@ -9,7 +9,7 @@
 <body>
     <div class="container mt-4">
         <h1>Lista de Coordenadores</h1>
-        <a href="{% url 'coordenador_create' %}" class="btn btn-primary mb-3">Adicionar Novo Coordenador</a>
+        <a href="{% url 'coordenador:coordenador_create' %}" class="btn btn-primary mb-3">Adicionar Novo Coordenador</a>
 
         <!-- Formulário de Pesquisa -->
         <form method="GET" class="mb-3">
@@ -33,7 +33,7 @@
                         <td>{{ coordenador.nome }}</td>
                         <td>{{ coordenador.data_nascimento }}</td>
                         <td>
-                            <a href="{% url 'coordenador_edit' coordenador.pk %}" class="btn btn-warning btn-sm">Editar</a>
+                            <a href="{% url 'coordenador:coordenador_edit' coordenador.pk %}" class="btn btn-warning btn-sm">Editar</a>
                             <!-- Adicione um botão para deletar, se necessário -->
                         </td>
                     </tr>

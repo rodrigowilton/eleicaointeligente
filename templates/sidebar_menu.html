@@ -1,19 +1,13 @@
-<!-- templates/sidebar_menu.html -->
+<!-- No need for additional custom CSS -->
 <ul class="nav flex-column">
-    <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">
-            Menu Item 1
-        </a>
+    <li class="nav-item mb-3">
+        <a href="{% url 'candidato:meta_list' %}" class="btn btn-primary w-100">Manutenção</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            Menu Item 2
-        </a>
+    <li class="nav-item mb-3">
+        <a href="{% url 'coordenador:coordenador_create' %}" class="btn btn-primary w-100">Coordenador</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            Menu Item 3
-        </a>
+    <li class="nav-item mb-3">
+        <a href="{% url 'lideranca:lideranca_list' %}" class="btn btn-primary w-100">Liderança</a>
     </li>
     <!-- Add more menu items as needed -->
 </ul>

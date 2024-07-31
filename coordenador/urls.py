@@ -2,6 +2,8 @@
 from django.urls import path
 from . import views
 
+app_name = 'coordenador'
+
 urlpatterns = [
     path('', views.coordenador_list, name='coordenador_list'),
     path('novo/', views.coordenador_create, name='coordenador_create'),
