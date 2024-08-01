@@ -1,18 +1,62 @@
-<!-- No need for additional custom CSS -->
-<ul class="nav flex-column">
-    <br>
-    <br>
-    <h3 class="text-center">Menu Gerencial</h3>
-    <li class="nav-item mb-3">
-        <a href="{% url 'candidato:meta_list' %}" class="btn btn-primary w-100">Manutenção</a>
-    </li>
-    <li class="nav-item mb-3">
-        <a href="{% url 'coordenador:coordenador_list' %}" class="btn btn-primary w-100">Coordenador</a>
-    </li>
-    <li class="nav-item mb-3">
-        <a href="{% url 'lideranca:lideranca_list' %}" class="btn btn-primary w-100">Liderança</a>
-    </li>
-        <li class="nav-item mb-3">
-        <a href="{% url 'lideranca:contato_list' %}" class="btn btn-primary w-100">Contato</a>
-    </li>
-</ul>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Menu Gerencial</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .menu-container {
+            background-color: #343a40; /* Cinza escuro */
+            padding: 20px; /* Ajuste o preenchimento conforme necessário */
+            border-radius: 5px; /* Opcional: arredondar os cantos */
+        }
+        .menu-container .btn {
+            margin-bottom: 10px; /* Ajuste o espaçamento entre os botões */
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <ul class="nav flex-column">
+            <br>
+            <br>
+            <h3 class="text-center text-white">Menu Gerencial</h3>
+            <li class="nav-item mb-3">
+                <a href="{% url 'candidato:meta_list' %}" class="btn btn-primary w-100">Manutenção</a>
+            </li>
+            <li class="nav-item mb-3">
+                <a href="{% url 'coordenador:coordenador_list' %}" class="btn btn-primary w-100">Coordenador</a>
+            </li>
+            <li class="nav-item mb-3">
+                <a href="{% url 'lideranca:lideranca_list' %}" class="btn btn-primary w-100">Liderança</a>
+            </li>
+            <li class="nav-item mb-3">
+                <a href="{% url 'lideranca:contato_list' %}" class="btn btn-primary w-100">Contato</a>
+            </li>
+            <li class="nav-item mb-3">
+                <a href="{% url 'lideranca:contato_list' %}" class="btn btn-primary w-100">Aniversariante</a>
+            </li>
+            <li class="nav-item mb-3">
+                <a href="{% url 'lideranca:contato_list' %}" class="btn btn-primary w-100">Relatório</a>
+            </li>
+            <li class="nav-item mb-3">
+                <a href="{% url 'lideranca:contato_list' %}" class="btn btn-primary w-100">Gabinete Virtual</a>
+            </li>
+            <li class="nav-item mb-3">
+                <a href="{% url 'lideranca:contato_list' %}" class="btn btn-primary w-100">Tickets</a>
+            </li>
+            <li class="nav-item mb-3">
+                <a href="{% url 'lideranca:contato_list' %}" class="btn btn-primary w-100">Gerar QR-CODE</a>
+            </li>
+            <li class="nav-item mb-3">
+                <a href="{% url 'lideranca:contato_list' %}" class="btn btn-primary w-100">Pesquisa</a>
+            </li>
+            <li class="nav-item mb-3">
+                <a href="{% url 'lideranca:contato_list' %}" class="btn btn-primary w-100">Enviar Whatsapp</a>
+            </li>
+        </ul>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

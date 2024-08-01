@@ -6,6 +6,8 @@ import io
 import base64
 from lideranca.models import Contato, Lideranca
 from django.db.models import Count
+import numpy as np
+
 
 def generate_contact_graph():
     contatos = Contato.objects.all()
@@ -17,20 +19,21 @@ def generate_contact_graph():
     lideranca_counts = contatos.values('lideranca__nome').annotate(count=Count('lideranca'))
     labels = [l['lideranca__nome'] for l in lideranca_counts]
     sizes = [l['count'] for l in lideranca_counts]
-    custom_colors = ['#FFA500', '#0d6efd']  # Verde e Laranja
 
-    fig, ax = plt.subplots(figsize=(4, 4))
-    wedges, texts, autotexts = ax.pie(sizes, colors=custom_colors[:len(labels)], autopct='%1.1f%%', startangle=140)
+    # Gerar cores distintas
+    num_colors = len(labels)
+    colors = plt.cm.viridis(np.linspace(0, 1, num_colors))
 
-    for text in texts:
-        text.set_fontsize(8)
-    for autotext in autotexts:
-        autotext.set_fontsize(8)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    bars = ax.bar(labels, sizes, color=colors, edgecolor='black')
 
-    ax.axis('equal')
+    ax.set_xlabel('Liderança')
+    ax.set_ylabel('Contagem')
+    ax.set_title('Contagem de Contatos por Liderança')
+    ax.set_xticklabels(labels, rotation=45, ha='right')
 
-    legend_labels = [f"{label} ({size})" for label, size in zip(labels, sizes)]
-    ax.legend(wedges, legend_labels, title="Liderança", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+    # Ajuste de layout
+    plt.tight_layout()
 
     buf = io.BytesIO()
     plt.savefig(buf, format='png', bbox_inches='tight')
@@ -39,7 +42,6 @@ def generate_contact_graph():
     buf.close()
 
     return image_base64, total_contatos
-
 def generate_city_graph():
     contatos = Contato.objects.all()
     total_contatos = contatos.count()
@@ -50,20 +52,25 @@ def generate_city_graph():
     cidades_contagem = contatos.values('cidade').annotate(contagem=Count('cidade'))
     cidades = [cidade['cidade'] for cidade in cidades_contagem]
     contagens = [cidade['contagem'] for cidade in cidades_contagem]
-    custom_colors = ['#0d6efd', '#FFA500']  # Verde e Laranja
 
-    fig, ax = plt.subplots(figsize=(2, 2))
-    wedges, texts, autotexts = ax.pie(contagens, colors=custom_colors[:len(cidades)], autopct='%1.1f%%', startangle=140)
+    # Gerar cores distintas
+    num_colors = len(cidades)
+    colors = plt.cm.tab10(np.linspace(0, 1, num_colors))
 
-    for text in texts:
-        text.set_fontsize(8)
-    for autotext in autotexts:
-        autotext.set_fontsize(8)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    bars = ax.bar(cidades, contagens, color=colors, edgecolor='black')
 
-    ax.axis('equal')
+    ax.set_xlabel('Cidade')
+    ax.set_ylabel('Número de Contatos')
+    ax.set_title('Número de Contatos por Cidade')
 
-    legend_labels = [f"{cidade} ({contagem})" for cidade, contagem in zip(cidades, contagens)]
-    ax.legend(wedges, legend_labels, title="Cidade", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+    # Adiciona valores acima das barras
+    for bar in bars:
+        yval = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width()/2.0, yval, int(yval), va='bottom', ha='center')
+
+    # Ajuste de layout
+    plt.tight_layout()
 
     buf = io.BytesIO()
     plt.savefig(buf, format='png', bbox_inches='tight')
@@ -72,7 +79,6 @@ def generate_city_graph():
     buf.close()
 
     return image_base64, total_contatos
-
 def index(request):
     contact_graph, total_contacts = generate_contact_graph()
     city_graph, _ = generate_city_graph()  # Inclua o total_contatos se necessário

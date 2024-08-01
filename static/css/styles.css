@@ -1,0 +1,51 @@
+/* Estilos da Sidebar */
+.sidebar {
+    height: 100vh; /* Ocupa a altura total da visualização */
+    position: fixed; /* Fixa a sidebar ao lado */
+    width: 16.67%; /* Largura da sidebar (2/12) */
+    top: 0; /* Alinha ao topo */
+    left: 0; /* Alinha ao lado esquerdo */
+    overflow-y: auto; /* Permite rolagem se necessário */
+    background-color: #f8f9fa; /* Fundo da sidebar */
+}
+
+/* Estilos do Main */
+main {
+    margin-left: 16.67%; /* Espaço para a sidebar */
+    margin-right: 16.67%; /* Espaço para a seção de gráficos */
+    padding-top: 80px; /* Espaço para a imagem fixa */
+    padding-left: 20px; /* Espaço interno à esquerda */
+    padding-right: 20px; /* Espaço interno à direita */
+    overflow-y: auto; /* Permite rolagem se o conteúdo exceder a altura */
+    height: 100vh; /* Altura total da visualização */
+    box-sizing: border-box; /* Inclui padding e bordas na largura e altura do elemento */
+}
+
+/* Fixar imagem no topo do conteúdo principal e garantir que o conteúdo role abaixo */
+.sticky-top {
+    position: sticky;
+    top: 0; /* Fica fixo ao topo do main */
+    z-index: 1; /* Fica acima do conteúdo abaixo */
+    background-color: #fff; /* Fundo branco para a imagem */
+    padding-top: 0; /* Remove padding adicional */
+    margin-bottom: 20px; /* Espaço abaixo da imagem */
+    text-align: center; /* Centraliza o conteúdo dentro do container */
+}
+
+/* Estilos da Seção de Gráficos */
+.bg-dark-gray {
+    height: 100vh; /* Ocupa a altura total da visualização */
+    position: fixed; /* Fixa a seção de gráficos ao lado */
+    width: 16.67%; /* Largura da seção de gráficos (2/12) */
+    top: 0; /* Alinha ao topo */
+    right: 0; /* Alinha ao lado direito */
+    overflow-y: auto; /* Permite rolagem se necessário */
+    background-color: #343a40; /* Fundo escuro */
+    color: #f8f9fa; /* Texto claro */
+}
+
+/* Fixar imagem no topo do conteúdo principal */
+.fixed-image {
+    max-width: 100%; /* Garante que a imagem não ultrapasse a largura do contêiner */
+    height: auto; /* Mantém a proporção da imagem */
+}
