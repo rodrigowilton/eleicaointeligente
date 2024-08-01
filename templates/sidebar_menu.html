@@ -1,5 +1,8 @@
 <!-- No need for additional custom CSS -->
 <ul class="nav flex-column">
+    <br>
+    <br>
+    <h3 class="text-center">Menu Gerencial</h3>
     <li class="nav-item mb-3">
         <a href="{% url 'candidato:meta_list' %}" class="btn btn-primary w-100">Manutenção</a>
     </li>
@@ -9,5 +12,7 @@
     <li class="nav-item mb-3">
         <a href="{% url 'lideranca:lideranca_list' %}" class="btn btn-primary w-100">Liderança</a>
     </li>
-    <!-- Add more menu items as needed -->
+        <li class="nav-item mb-3">
+        <a href="{% url 'lideranca:contato_list' %}" class="btn btn-primary w-100">Contato</a>
+    </li>
 </ul>
