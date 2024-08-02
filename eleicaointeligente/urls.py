@@ -6,5 +6,7 @@ urlpatterns = [
     path('coordenadores/', include('coordenador.urls')),
     path('candidatos/', include('candidato.urls')),
     path('lideranca/', include('lideranca.urls', namespace='lideranca')),
+    path('pesquisa/', include('pesquisa.urls')),  # Incluindo URLs do app pesquisa
+
 ]
 

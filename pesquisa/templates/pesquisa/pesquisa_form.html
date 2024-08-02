@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <title>Pesquisa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: auto; /* Adiciona rolagem se necessário */
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            border: 2px solid #dcdcdc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%; /* Ajusta a largura para 100% */
+            max-width: 800px; /* Define um limite máximo para a largura */
+            margin: 0 10px; /* Adiciona espaçamento lateral */
+        }
+
+		h1 {
+			text-align: center;
+			color: #333;
+			margin: 440px 20px 20px 20px; /* Margem superior de 72px para 3 linhas do topo */
+			font-size: 24px;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+        .form-group {
+            margin-bottom: 20px; /* Aumenta o espaçamento entre os grupos de formulário */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group .question-label {
+            font-weight: bold; /* Destaca as perguntas em negrito */
+        }
+
+        .form-group select,
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            padding: 10px; /* Aumenta o padding dos campos */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        .form-group input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .form-group .radio-label {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px; /* Aumenta o espaçamento entre os campos */
+            margin-bottom: 20px; /* Adiciona margem inferior entre linhas */
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0; /* Remove a margem inferior do grupo de formulário */
+        }
+
+        .form-actions {
+            text-align: center;
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .form-actions button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 600px) {
+            .form-container {
+                width: 100%; /* Ajusta a largura para dispositivos menores */
+                padding: 10px;
+                margin: 0; /* Remove a margem lateral em dispositivos menores */
+            }
+
+            .form-row {
+                flex-direction: column; /* Empilha os campos em dispositivos menores */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<br>
+    <div class="form-container">
+        <h1>Preencha a Pesquisa</h1>
+        <a href="{% url 'candidato:index' %}" class="btn btn-secondary mb-3">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H3.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L3.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
+                </svg>
+                Voltar para Principal
+        </a>
+
+        <form method="post">
+            {% csrf_token %}
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+            <div class="form-group">
+                <label for="id_pesquisadora" class="question-label">Pesquisadora:</label>
+                {{ form.pesquisadora }}
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_cidade" class="question-label">Cidade:</label>
+                    {{ form.cidade }}
+                </div>
+                <div class="form-group">
+                    <label for="id_bairro" class="question-label">Bairro:</label>
+                    {{ form.bairro }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_sexo" class="question-label">Sexo:</label>
+                    {{ form.sexo }}
+                </div>
+                <div class="form-group">
+                    <label for="id_idade" class="question-label">Idade:</label>
+                    {{ form.idade }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="question-label">Você votaria numa indicação da família Brazao para vereador?</label>
+                <div>
+                    {{ form.indicacao_familia_brazao }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_voto_prefeito" class="question-label">Em quem você votaria para prefeito do Rio de Janeiro?</label>
+                {{ form.voto_prefeito }}
+            </div>
+            <div class="form-group">
+                <label for="id_voto_vereador" class="question-label">Em quem você votaria para vereador?</label>
+                {{ form.voto_vereador }}
+            </div>
+            <div class="form-group">
+                <label for="id_rede_social" class="question-label">Qual rede social você usa?</label>
+                {{ form.rede_social }}
+            </div>
+            <div class="form-group">
+                <label for="id_prioridade_prefeito" class="question-label">Qual deve ser a prioridade do prefeito para seu bairro?</label>
+                {{ form.prioridade_prefeito }}
+            </div>
+            <div class="form-group">
+                <label for="id_politico_impacto" class="question-label">Qual político que mais fez pela cidade?</label>
+                {{ form.politico_impacto }}
+            </div>
+            <div class="form-group">
+                <label for="id_voto_presidente" class="question-label">Se a eleição para presidente fosse hoje, em quem você votaria?</label>
+                {{ form.voto_presidente }}
+            </div>
+            <div class="form-actions">
+                <button type="submit">Enviar</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
