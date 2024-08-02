@@ -1,0 +1,75 @@
+Date: 2/8/2024
+Time: 8:39
+Phone Number: +(27) 99273-4399
+Message: teste
+--------------------
+Date: 2/8/2024
+Time: 8:39
+Phone Number: +(27) 99273-4399
+Message: teste
+--------------------
+Date: 2/8/2024
+Time: 8:51
+Phone Number: +(27) 99273-4399
+Message: teste2
+--------------------
+Date: 2/8/2024
+Time: 8:59
+Phone Number: +(27) 99273-4399
+Message: teste true
+--------------------
+Date: 2/8/2024
+Time: 10:11
+Phone Number: +(27) 99273-4399
+Message: teste selecionada
+--------------------
+Date: 2/8/2024
+Time: 10:14
+Phone Number: +21 99215-7575
+Message: teste do envio pelo eleicoesinteligente, confirme se ok
+--------------------
+Date: 2/8/2024
+Time: 10:19
+Phone Number: +(27) 99273-4399
+Message: teste
+--------------------
+Date: 2/8/2024
+Time: 10:20
+Phone Number: +(27) 99273-4399
+Message: mais
+--------------------
+Date: 2/8/2024
+Time: 10:58
+Phone Number: +(27) 99273-4399
+Message: teste
+--------------------
+Date: 2/8/2024
+Time: 11:15
+Phone Number: +(27) 99273-4399
+Message: teste
+--------------------
+Date: 2/8/2024
+Time: 11:24
+Phone Number: +(27) 99273-4399
+Message: teste
+--------------------
+Date: 2/8/2024
+Time: 11:25
+Phone Number: +(27) 99273-4399
+Message: teste
+--------------------
+Date: 2/8/2024
+Time: 12:54
+Phone Number: +(27) 99273-4399
+Message: teste
+--------------------
+Date: 2/8/2024
+Time: 12:57
+Phone Number: +(27) 99273-4399
+Message: teste
+--------------------
+Date: 2/8/2024
+Time: 12:59
+Phone Number: +(27) 99273-4399
+Message: fdgdsfgdsfgdsfgsdfgdsfgds
+--------------------

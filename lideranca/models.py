@@ -61,6 +61,8 @@ class Contato(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
     observacao = models.TextField(blank=True, null=True)
     lideranca = models.ForeignKey(Lideranca, on_delete=models.CASCADE)
+    msg = models.BooleanField(default=False)  # Campo para indicar se a mensagem foi enviada
+
 
     def __str__(self):
         return self.nome

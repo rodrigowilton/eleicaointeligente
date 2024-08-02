@@ -7,7 +7,74 @@ import base64
 from lideranca.models import Contato, Lideranca
 from django.db.models import Count
 import numpy as np
+import pywhatkit as kit
+from django.contrib import messages
+import os
+from django.conf import settings
 
+
+
+def send_whatsapp_message(request):
+    if request.method == 'POST':
+        message_body = request.POST.get('message_body')
+
+        contatos = Contato.objects.filter(msg=True)
+        if not contatos.exists():
+            messages.info(request, 'Nenhum contato marcado para envio de mensagem.')
+            return redirect('candidato:send_whatsapp_message')
+
+        try:
+            for contato in contatos:
+                try:
+                    # Envia a mensagem e mantém o WhatsApp Web aberto por um tempo maior
+                    kit.sendwhatmsg_instantly(
+                        f"+{contato.telefone}",
+                        message_body,
+                        10,  # Hora de envio
+                        True,  # Não fecha automaticamente
+                        60  # Tempo em segundos para esperar
+                    )
+                    contato.msg = False  # Marcar mensagem como enviada e desativar
+                    contato.save()
+                    messages.success(request, f'Mensagem enviada para {contato.nome} ({contato.telefone})')
+                except Exception as e:
+                    messages.error(request, f'Erro ao enviar mensagem para {contato.nome} ({contato.telefone}): {e}')
+        except Exception as e:
+            messages.error(request, f'Erro ao enviar mensagens: {e}')
+
+        return redirect('candidato:send_whatsapp_message')
+
+    contatos = Contato.objects.all()
+    return render(request, 'candidato/send_whatsapp_message.html', {'contatos': contatos})
+
+
+def mark_all_contacts(request):
+    if request.method == 'POST':
+        Contato.objects.update(msg=True)
+        messages.success(request, 'Todos os contatos foram marcados para envio de mensagem.')
+    return redirect('candidato:send_whatsapp_message')
+
+def mark_selected_contacts(request):
+    if request.method == 'POST':
+        selected_contacts = request.POST.getlist('selected_contacts')
+        Contato.objects.filter(id__in=selected_contacts).update(msg=True)
+        messages.success(request, 'Contatos selecionados foram marcados para envio de mensagem.')
+    return redirect('candidato:send_whatsapp_message')
+
+# Demais funções da sua aplicação (index, meta_create, meta_list, meta_edit, meta_delete, candidato_list, candidato_create, candidato_edit, candidato_delete)
+
+def mark_all_contacts(request):
+    if request.method == 'POST':
+        Contato.objects.update(msg=True)
+        messages.success(request, 'Todos os contatos foram marcados para envio de mensagem.')
+    return redirect('candidato:send_whatsapp_message')
+
+def mark_selected_contacts(request):
+    if request.method == 'POST':
+        selected_contacts = request.POST.getlist('selected_contacts')
+        Contato.objects.filter(id__in=selected_contacts).update(msg=True)
+        messages.success(request, 'Contatos selecionados foram marcados para envio de mensagem.')
+    return redirect('candidato:send_whatsapp_message')
 
 def generate_contact_graph():
     contatos = Contato.objects.all()
