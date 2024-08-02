@@ -1,7 +1,18 @@
 <!-- templates/candidato/send_whatsapp_message.html -->
 {% extends 'base_generic.html' %}
 
+{% load static %}
+
 {% block title %}Enviar Mensagem pelo WhatsApp{% endblock %}
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
 
 {% block content %}
 <div class="container">
@@ -40,13 +51,13 @@
             <textarea class="form-control" id="message_body" name="message_body" rows="3" required></textarea>
         </div>
         <div class="mb-3">
-            <label for="image" class="form-label">Enviar Imagem</label>
+            <label for="image" class="form-label"><b>Enviar Imagem</b></label>
             <input class="form-control" type="file" id="image" name="image">
         </div>
-        <div class="mb-3">
+        <!--- <div class="mb-3">
             <label for="document" class="form-label">Enviar Documento</label>
             <input class="form-control" type="file" id="document" name="document">
-        </div>
+        </div> --->
         <button type="submit" class="btn btn-primary">Enviar</button>
     </form>
 

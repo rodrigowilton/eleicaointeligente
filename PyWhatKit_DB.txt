@@ -73,3 +73,41 @@ Time: 12:59
 Phone Number: +(27) 99273-4399
 Message: fdgdsfgdsfgdsfgsdfgdsfgds
 --------------------
+Date: 2/8/2024
+Time: 13:5
+Phone Number: +(27) 99273-4399
+Message: teste
+--------------------
+Date: 2/8/2024
+Time: 13:20
+Phone Number: +(27) 99273-4399
+Message: teste
+--------------------
+Date: 2/8/2024
+Time: 13:37
+Phone Number: +(27) 99273-4399
+Message: ytesasdsd
+--------------------
+Date: 2/8/2024
+Time: 13:51
+Phone Number: +(27) 99273-4399
+Image: D:\eleicaointeligente\eleicaointeligente\media\frame.png
+Caption: dfgdfgdfgdfgdfgd
+--------------------
+Date: 2/8/2024
+Time: 13:54
+Phone Number: +(27) 99273-4399
+Image: D:\eleicaointeligente\eleicaointeligente\media\rodrigo.jpg
+Caption: teste com arauivo
+--------------------
+Date: 2/8/2024
+Time: 13:57
+Phone Number: +(27) 99273-4399
+Image: D:\eleicaointeligente\eleicaointeligente\media\WhatsApp Image 2024-04-24 at 23.10.17.jpeg
+Caption: teste
+--------------------
+Date: 2/8/2024
+Time: 13:59
+Phone Number: +(27) 99273-4399
+Message: com documentoBaixe o documento aqui: http://127.0.0.1:8000/media/atualizacao.txt
+--------------------

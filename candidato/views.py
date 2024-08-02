@@ -11,12 +11,18 @@ import pywhatkit as kit
 from django.contrib import messages
 import os
 from django.conf import settings
+from pywhatkit.whats import sendwhats_image, sendwhatmsg_instantly
 
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 def send_whatsapp_message(request):
     if request.method == 'POST':
         message_body = request.POST.get('message_body')
+        image = request.FILES.get('image')
+        document = request.FILES.get('document')
 
         contatos = Contato.objects.filter(msg=True)
         if not contatos.exists():
@@ -25,29 +31,56 @@ def send_whatsapp_message(request):
 
         try:
             for contato in contatos:
-                try:
-                    # Envia a mensagem e mantém o WhatsApp Web aberto por um tempo maior
-                    kit.sendwhatmsg_instantly(
-                        f"+{contato.telefone}",
-                        message_body,
-                        10,  # Hora de envio
-                        True,  # Não fecha automaticamente
-                        60  # Tempo em segundos para esperar
+                telefone_completo = f"+{contato.telefone}"
+                logger.debug(f'Enviando mensagem para {telefone_completo}')
+
+                if image:
+                    image_path = os.path.join(settings.MEDIA_ROOT, image.name)
+                    with open(image_path, 'wb+') as destination:
+                        for chunk in image.chunks():
+                            destination.write(chunk)
+                    sendwhats_image(
+                        telefone_completo,
+                        image_path,
+                        message_body
                     )
-                    contato.msg = False  # Marcar mensagem como enviada e desativar
-                    contato.save()
-                    messages.success(request, f'Mensagem enviada para {contato.nome} ({contato.telefone})')
-                except Exception as e:
-                    messages.error(request, f'Erro ao enviar mensagem para {contato.nome} ({contato.telefone}): {e}')
+                    logger.debug(f'Imagem enviada para {telefone_completo}')
+                elif document:
+                    document_path = os.path.join(settings.MEDIA_ROOT, document.name)
+                    with open(document_path, 'wb+') as destination:
+                        for chunk in document.chunks():
+                            destination.write(chunk)
+                    kit.sendwhatmsg_instantly(
+                        telefone_completo,
+                        f"{message_body}\n\nBaixe o documento aqui: {request.build_absolute_uri(settings.MEDIA_URL + document.name)}",
+                        10,
+                        True,
+                        60
+                    )
+                    logger.debug(f'Documento enviado para {telefone_completo}')
+                else:
+                    sendwhatmsg_instantly(
+                        telefone_completo,
+                        message_body,
+                        10,
+                        False,
+                        60
+                    )
+                    logger.debug(f'Mensagem enviada para {telefone_completo}')
+
+                contato.msg = False  # Marcar mensagem como enviada e desativar
+                contato.save()
+
+            messages.success(request, 'Mensagens enviadas com sucesso!')
         except Exception as e:
             messages.error(request, f'Erro ao enviar mensagens: {e}')
+            logger.error(f'Erro ao enviar mensagens: {e}')
 
         return redirect('candidato:send_whatsapp_message')
 
     contatos = Contato.objects.all()
     return render(request, 'candidato/send_whatsapp_message.html', {'contatos': contatos})
 
-
 def mark_all_contacts(request):
     if request.method == 'POST':
         Contato.objects.update(msg=True)
@@ -60,22 +93,6 @@ def mark_selected_contacts(request):
         Contato.objects.filter(id__in=selected_contacts).update(msg=True)
         messages.success(request, 'Contatos selecionados foram marcados para envio de mensagem.')
     return redirect('candidato:send_whatsapp_message')
-
-# Demais funções da sua aplicação (index, meta_create, meta_list, meta_edit, meta_delete, candidato_list, candidato_create, candidato_edit, candidato_delete)
-
-def mark_all_contacts(request):
-    if request.method == 'POST':
-        Contato.objects.update(msg=True)
-        messages.success(request, 'Todos os contatos foram marcados para envio de mensagem.')
-    return redirect('candidato:send_whatsapp_message')
-
-def mark_selected_contacts(request):
-    if request.method == 'POST':
-        selected_contacts = request.POST.getlist('selected_contacts')
-        Contato.objects.filter(id__in=selected_contacts).update(msg=True)
-        messages.success(request, 'Contatos selecionados foram marcados para envio de mensagem.')
-    return redirect('candidato:send_whatsapp_message')
-
 def generate_contact_graph():
     contatos = Contato.objects.all()
     total_contatos = contatos.count()
