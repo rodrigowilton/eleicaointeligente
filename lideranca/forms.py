@@ -7,7 +7,6 @@ class LiderancaForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'cpf': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '000.000.000-00'}),
             'telefone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(00) 00000-0000'}),
         }
 
@@ -17,6 +16,5 @@ class ContatoForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'cpf': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '000.000.000-00'}),
             'telefone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(00) 00000-0000'}),
         }
