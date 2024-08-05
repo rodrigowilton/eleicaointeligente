@@ -1,0 +1,74 @@
+<!-- templates/candidato/send_whatsapp_message.html -->
+{% extends 'base_generic.html' %}
+
+{% load static %}
+
+{% block title %}Enviar Mensagem pelo WhatsApp{% endblock %}
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+{% block content %}
+<div class="container">
+    <h2>Enviar Mensagem pelo WhatsApp</h2>
+    <a href="{% url 'candidato:index' %}" class="btn btn-secondary mb-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 1-.5.5H3.707l4.147 4.146a.5.5 0 0 1-.708.708l-5-5a.5.5 0 0 1 0-.708l5-5a.5.5 0 1 1 .708.708L3.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
+        </svg>
+        Voltar para Principal
+    </a>
+
+    <h4>Marcar Contatos</h4>
+    <form method="post" action="{% url 'candidato:mark_all_contacts' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-secondary mb-3">Marcar Todos os Contatos</button>
+    </form>
+
+    <form method="post" action="{% url 'candidato:mark_selected_contacts' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="select_contacts" class="form-label"><b>Selecione o Contato</b></label>
+            <select class="form-select" id="select_contacts" name="selected_contacts" multiple required>
+                {% for contato in contatos %}
+                    <option value="{{ contato.id }}">{{ contato.nome }} - {{ contato.telefone }}{% if contato.msg %} (Mensagem Enviada){% endif %}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-secondary mb-3">Marcar Contatos Selecionados</button>
+    </form>
+
+    <h4>Enviar Mensagem</h4>
+    <form method="post" action="{% url 'candidato:send_whatsapp_message' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="message_body" class="form-label">Mensagem</label>
+            <textarea class="form-control" id="message_body" name="message_body" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label"><b>Enviar Imagem</b></label>
+            <input class="form-control" type="file" id="image" name="image">
+        </div>
+        <!--- <div class="mb-3">
+            <label for="document" class="form-label">Enviar Documento</label>
+            <input class="form-control" type="file" id="document" name="document">
+        </div> --->
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+
+    {% if messages %}
+        <ul class="mt-3">
+            {% for message in messages %}
+                <li class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

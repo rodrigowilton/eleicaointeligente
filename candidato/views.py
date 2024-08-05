@@ -18,6 +18,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+"""
 def send_whatsapp_message(request):
     if request.method == 'POST':
         message_body = request.POST.get('message_body')
@@ -80,6 +81,44 @@ def send_whatsapp_message(request):
 
     contatos = Contato.objects.all()
     return render(request, 'candidato/send_whatsapp_message.html', {'contatos': contatos})
+    
+"""
+
+def send_whatsapp_message(request):
+    whatsapp_links = []
+
+    if request.method == 'POST':
+        message_body = request.POST.get('message_body')
+        image = request.FILES.get('image')
+        document = request.FILES.get('document')
+
+        contatos = Contato.objects.filter(msg=True)
+        if not contatos.exists():
+            messages.info(request, 'Nenhum contato marcado para envio de mensagem.')
+            return redirect('candidato:send_whatsapp_message')
+
+        try:
+            for contato in contatos:
+                telefone_completo = f"+{contato.telefone}"
+                logger.debug(f'Gerando link para {telefone_completo}')
+
+                # Gerar link do WhatsApp
+                whatsapp_link = f"https://wa.me/{telefone_completo}?text={message_body}"
+                whatsapp_links.append(whatsapp_link)
+
+                # Você pode salvar as mensagens como enviadas aqui, se necessário
+                contato.msg = False  # Marcar mensagem como enviada e desativar
+                contato.save()
+
+            messages.success(request, 'Links de mensagens gerados com sucesso!')
+        except Exception as e:
+            messages.error(request, f'Erro ao gerar links: {e}')
+            logger.error(f'Erro ao gerar links: {e}')
+
+        return render(request, 'candidato/send_whatsapp_message.html', {'whatsapp_links': whatsapp_links, 'contatos': contatos})
+
+    contatos = Contato.objects.all()
+
 
 def mark_all_contacts(request):
     if request.method == 'POST':
