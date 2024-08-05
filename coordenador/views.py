@@ -8,7 +8,7 @@ def coordenador_create(request):
         form = CoordenadorForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('coordenador_list')
+            return redirect('coordenador:coordenador_list')
     else:
         form = CoordenadorForm()
     return render(request, 'coordenador/coordenador_form.html', {'form': form})
@@ -19,7 +19,7 @@ def coordenador_update(request, pk):
         form = CoordenadorForm(request.POST, instance=coordenador)
         if form.is_valid():
             form.save()
-            return redirect('coordenador_list')
+            return redirect('coordenador:coordenador_list')
     else:
         form = CoordenadorForm(instance=coordenador)
     return render(request, 'coordenador/coordenador_form.html', {'form': form})

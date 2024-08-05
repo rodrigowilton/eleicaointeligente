@@ -6,7 +6,7 @@ class CoordenadorForm(forms.ModelForm):
     class Meta:
         model = Coordenador
         fields = [
-            'nome', 'data_nascimento', 'sexo', 'cpf', 'nome_mae',
+            'nome', 'data_nascimento', 'sexo',
             'cep', 'logradouro', 'numero', 'complemento', 'bairro',
             'cidade', 'uf', 'email', 'telefone', 'usuario', 'senha'
         ]

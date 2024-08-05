@@ -10,8 +10,6 @@ class Coordenador(models.Model):
     nome = models.CharField(max_length=255)
     data_nascimento = models.DateField()
     sexo = models.CharField(max_length=1, choices=SEXO_CHOICES)
-    cpf = models.CharField(max_length=14)
-    nome_mae = models.CharField(max_length=255)
     cep = models.CharField(max_length=9)
     logradouro = models.CharField(max_length=255)
     numero = models.CharField(max_length=10)
