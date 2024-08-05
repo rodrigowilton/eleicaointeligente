@@ -111,3 +111,9 @@ Time: 13:59
 Phone Number: +(27) 99273-4399
 Message: com documentoBaixe o documento aqui: http://127.0.0.1:8000/media/atualizacao.txt
 --------------------
+Date: 5/8/2024
+Time: 14:37
+Phone Number: +(27) 99273-4399
+Image: D:\eleicaointeligente\eleicaointeligente\media\CSS.jpg
+Caption: teste
+--------------------

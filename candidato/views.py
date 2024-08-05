@@ -14,6 +14,7 @@ from django.conf import settings
 from pywhatkit.whats import sendwhats_image, sendwhatmsg_instantly
 
 
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -85,8 +86,6 @@ def send_whatsapp_message(request):
 """
 
 def send_whatsapp_message(request):
-    whatsapp_links = []
-
     if request.method == 'POST':
         message_body = request.POST.get('message_body')
         image = request.FILES.get('image')
@@ -100,25 +99,55 @@ def send_whatsapp_message(request):
         try:
             for contato in contatos:
                 telefone_completo = f"+{contato.telefone}"
-                logger.debug(f'Gerando link para {telefone_completo}')
+                logger.debug(f'Enviando mensagem para {telefone_completo}')
 
-                # Gerar link do WhatsApp
-                whatsapp_link = f"https://wa.me/{telefone_completo}?text={message_body}"
-                whatsapp_links.append(whatsapp_link)
+                if image:
+                    image_path = os.path.join(settings.MEDIA_ROOT, image.name)
+                    with open(image_path, 'wb+') as destination:
+                        for chunk in image.chunks():
+                            destination.write(chunk)
+                    sendwhats_image(
+                        telefone_completo,
+                        image_path,
+                        message_body
+                    )
+                    logger.debug(f'Imagem enviada para {telefone_completo}')
+                elif document:
+                    document_path = os.path.join(settings.MEDIA_ROOT, document.name)
+                    with open(document_path, 'wb+') as destination:
+                        for chunk in document.chunks():
+                            destination.write(chunk)
+                    kit.sendwhatmsg_instantly(
+                        telefone_completo,
+                        f"{message_body}\n\nBaixe o documento aqui: {request.build_absolute_uri(settings.MEDIA_URL + document.name)}",
+                        10,
+                        True,
+                        60
+                    )
+                    logger.debug(f'Documento enviado para {telefone_completo}')
+                else:
+                    sendwhatmsg_instantly(
+                        telefone_completo,
+                        message_body,
+                        10,
+                        False,
+                        60
+                    )
+                    logger.debug(f'Mensagem enviada para {telefone_completo}')
 
-                # Você pode salvar as mensagens como enviadas aqui, se necessário
                 contato.msg = False  # Marcar mensagem como enviada e desativar
                 contato.save()
 
-            messages.success(request, 'Links de mensagens gerados com sucesso!')
+            messages.success(request, 'Mensagens enviadas com sucesso!')
         except Exception as e:
-            messages.error(request, f'Erro ao gerar links: {e}')
-            logger.error(f'Erro ao gerar links: {e}')
+            messages.error(request, f'Erro ao enviar mensagens: {e}')
+            logger.error(f'Erro ao enviar mensagens: {e}')
 
-        return render(request, 'candidato/send_whatsapp_message.html', {'whatsapp_links': whatsapp_links, 'contatos': contatos})
+        return redirect('candidato:send_whatsapp_message')
 
+    # Adicione essa linha para garantir que um HttpResponse seja retornado em uma requisição GET
     contatos = Contato.objects.all()
-
+    return render(request, 'candidato/send_whatsapp_message.html', {'contatos': contatos})
 
 def mark_all_contacts(request):
     if request.method == 'POST':
