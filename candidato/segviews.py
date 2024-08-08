@@ -97,16 +97,10 @@ def send_whatsapp_message(request):
             messages.error(request, f'Erro ao enviar mensagens: {e}')
 
         # Fecha a aba do navegador com WhatsApp Web
-        time.sleep(5)  # Aguarda o fechamento da aba
         pyautogui.hotkey('ctrl', 'w')
         time.sleep(1)  # Aguarda o fechamento da aba
-        pyautogui.press('enter')
-        time.sleep(1)  # Aguarda o fechamento da aba
-        pyautogui.hotkey('ctrl', 'w')
-        time.sleep(5)  # Aguarda o fechamento da aba
-        pyautogui.press('f5')
 
-        return render(request, 'candidato/send_whatsapp_message.html')
+        return render(request, 'candidato/close_after_send.html')
 
     contatos = Contato.objects.all()
     return render(request, 'candidato/send_whatsapp_message.html', {'contatos': contatos})
