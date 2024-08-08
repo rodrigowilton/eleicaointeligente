@@ -14,6 +14,8 @@ from django.conf import settings
 import logging
 import time
 import pyautogui
+import matplotlib.pyplot as plt
+
 
 logger = logging.getLogger(__name__)
 

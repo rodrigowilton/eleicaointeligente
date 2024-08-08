@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'lideranca',
     'candidato',
     'pesquisa',
+
 ]
 
 MIDDLEWARE = [
