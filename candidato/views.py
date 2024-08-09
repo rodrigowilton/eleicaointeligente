@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Candidato, Meta
-from .forms import CandidatoForm, MetaForm
+from .models import Candidato, Meta, StatusContato
+from .forms import CandidatoForm, MetaForm, StatusForm
 import io
 import base64
 from lideranca.models import Contato
@@ -305,3 +305,36 @@ def candidato_delete(request, pk):
         candidato.delete()
         return redirect('candidato:candidato_list')
     return render(request, 'candidato/candidato_confirm_delete.html', {'candidato': candidato})
+
+
+def status_create(request):
+    if request.method == 'POST':
+        form = StatusForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('candidato:status_list')
+    else:
+        form = StatusForm()
+    return render(request, 'candidato/status_form.html', {'form': form})
+
+def status_list(request):
+    status = StatusContato.objects.all()
+    return render(request, 'candidato/status_list.html', {'status': status})
+
+def status_edit(request, pk):
+    status = get_object_or_404(StatusContato, pk=pk)
+    if request.method == 'POST':
+        form = StatusForm(request.POST, instance=status)
+        if form.is_valid():
+            form.save()
+            return redirect('candidato:status_list')
+    else:
+        form = StatusForm(instance=status)
+    return render(request, 'candidato/status_form.html', {'form': form})
+
+def status_delete(request, pk):
+    status = get_object_or_404(StatusContato, pk=pk)
+    if request.method == 'POST':
+        status.delete()
+        return redirect('candidato:status_list')
+    return render(request, 'candidato/status_confirm_delete.html', {'status': status})

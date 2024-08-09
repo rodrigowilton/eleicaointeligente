@@ -18,4 +18,8 @@ urlpatterns = [
     path('send-whatsapp-message/', send_whatsapp_message, name='send_whatsapp_message'),
     path('mark-all-contacts/', mark_all_contacts, name='mark_all_contacts'),
     path('mark-selected-contacts/', mark_selected_contacts, name='mark_selected_contacts'),
+    path('status/', views.status_list, name='status_list'),
+    path('status/create/', views.status_create, name='status_create'),
+    path('status/edit/<int:pk>/', views.status_edit, name='status_edit'),
+    path('status/delete/<int:pk>/', views.status_delete, name='status_delete'),
 ]

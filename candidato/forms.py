@@ -1,6 +1,7 @@
 from django import forms
 from .models import Candidato
 from .models import Meta
+from .models import StatusContato
 
 
 class CandidatoForm(forms.ModelForm):
@@ -15,3 +16,11 @@ class MetaForm(forms.ModelForm):
     class Meta:
         model = Meta
         fields = ['meta_do_sistema', 'controle_por_contato']
+
+
+class StatusForm(forms.ModelForm):
+    class Meta:
+        model = StatusContato
+        fields = ['status_do_contato']
+
+
