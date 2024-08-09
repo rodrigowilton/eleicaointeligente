@@ -39,19 +39,19 @@ def send_whatsapp_message(request):
                 telefone_completo = f"+55{contato.telefone}".replace(" ", "").replace("-", "")
                 logger.info(f"Enviando mensagem para contato: {contato.nome} - {telefone_completo}")
 
-                # Abre o navegador e vai para o WhatsApp Web
+                """# Abre o navegador e vai para o WhatsApp Web
                 pyautogui.hotkey('ctrl', 't')
                 pyautogui.write('https://web.whatsapp.com')
                 pyautogui.press('enter')
-                time.sleep(20)  # Aguarda o carregamento da página
+                time.sleep(40)  # Aguarda o carregamento da página """
 
                 # Pesquisa e seleciona o contato
-                pyautogui.click(x=2184, y=216)  # Coordenada para a caixa de pesquisa
+                pyautogui.click(x=230, y=181)  # Coordenada para a caixa de pesquisa
                 time.sleep(2)
                 pyautogui.write(telefone_completo)
                 time.sleep(2)
                 pyautogui.press('enter')
-                time.sleep(5)  # Aguarda a abertura do chat
+                time.sleep(10)  # Aguarda a abertura do chat
 
                 # Envia a mensagem
                 pyautogui.write(message_body)
@@ -64,9 +64,9 @@ def send_whatsapp_message(request):
                         for chunk in image.chunks():
                             destination.write(chunk)
 
-                    pyautogui.click(x=2620, y=977)  # Coordenada para o botão de anexo
+                    pyautogui.click(x=700, y=978)  # Coordenada para o botão de anexo
                     time.sleep(2)
-                    pyautogui.click(x=2692, y=762)  # Coordenada para o botão de imagem
+                    pyautogui.click(x=772, y=764)  # Coordenada para o botão de imagem
                     time.sleep(2)
                     pyautogui.write(image_path)
                     pyautogui.press('enter')
@@ -80,9 +80,9 @@ def send_whatsapp_message(request):
                         for chunk in document.chunks():
                             destination.write(chunk)
 
-                    pyautogui.click(x=2620, y=977)  # Coordenada para o botão de anexo
+                    pyautogui.click(x=700, y=978)  # Coordenada para o botão de anexo
                     time.sleep(2)
-                    pyautogui.click(x=2657, y=721)  # Coordenada para o botão de documento
+                    pyautogui.click(x=781, y=721)  # Coordenada para o botão de documento
                     time.sleep(2)
                     pyautogui.write(document_path)
                     pyautogui.press('enter')
@@ -92,7 +92,6 @@ def send_whatsapp_message(request):
 
                 contato.msg = False
                 contato.save()
-
             messages.success(request, 'Mensagens enviadas com sucesso!')
         except Exception as e:
             logger.error(f'Erro ao enviar mensagens: {e}', exc_info=True)
@@ -100,13 +99,13 @@ def send_whatsapp_message(request):
 
         # Fecha a aba do navegador com WhatsApp Web
         time.sleep(5)  # Aguarda o fechamento da aba
-        pyautogui.hotkey('ctrl', 'w')
+        """pyautogui.hotkey('ctrl', 'w')
         time.sleep(1)  # Aguarda o fechamento da aba
         pyautogui.press('enter')
         time.sleep(1)  # Aguarda o fechamento da aba
         pyautogui.hotkey('ctrl', 'w')
         time.sleep(5)  # Aguarda o fechamento da aba
-        pyautogui.press('f5')
+        pyautogui.press('f5')"""
 
         return render(request, 'candidato/send_whatsapp_message.html')
 
