@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from .views import generate_qr_code
+
 
 app_name = 'lideranca'
 
@@ -11,4 +13,7 @@ urlpatterns = [
     path('contato/create/', views.contato_create, name='contato_create'),
     path('contato/edit/<int:pk>/', views.contato_edit, name='contato_edit'),
     path('relatorio-aniversariantes/', views.relatorio_aniversariantes, name='relatorio_aniversariantes'),
+    path('relatorio-cadastros/', views.relatorio_cadastros, name='relatorio_cadastros'),
+    path('generate_qr_code/', generate_qr_code, name='generate_qr_code'),
+
 ]

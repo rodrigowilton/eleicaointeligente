@@ -1,4 +1,6 @@
 from django.db import models
+from candidato.models import StatusContato  # Importando o modelo StatusContato
+
 
 class Lideranca(models.Model):
     SEXO_CHOICES = [
@@ -32,11 +34,6 @@ class Contato(models.Model):
         ('O', 'Outro'),
     ]
 
-    STATUS_CHOICES = [
-        ('A', 'Ativo'),
-        ('I', 'Inativo'),
-    ]
-
     nome = models.CharField(max_length=255)
     data_nascimento = models.DateField()
     sexo = models.CharField(max_length=1, choices=SEXO_CHOICES)
@@ -51,7 +48,7 @@ class Contato(models.Model):
     telefone = models.CharField(max_length=15)
     facebook = models.CharField(max_length=255, blank=True, null=True)
     instagram = models.CharField(max_length=255, blank=True, null=True)
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+    status = models.ForeignKey(StatusContato, on_delete=models.SET_NULL, null=True)
     observacao = models.TextField(blank=True, null=True)
     lideranca = models.ForeignKey(Lideranca, on_delete=models.CASCADE)
     msg = models.BooleanField(default=False)  # Campo para indicar se a mensagem foi enviada

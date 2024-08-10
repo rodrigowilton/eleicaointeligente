@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -76,17 +75,16 @@
                 {{ form.instagram|add_class:"form-control" }}
             </div>
             <div class="mb-3">
-                <label for="id_status" class="form-label">status</label>
-                {{ form.status|add_class:"form-control" }}
+                <label for="id_status" class="form-label">Status</label>
+                {{ form.status|add_class:"form-select" }}
             </div>
             <div class="mb-3">
                 <label for="id_observacao" class="form-label">Observação</label>
                 {{ form.observacao|add_class:"form-control" }}
             </div>
-
             <div class="mb-3">
                 <label for="id_lideranca" class="form-label">Liderança</label>
-                {{ form.lideranca|add_class:"form-control" }}
+                {{ form.lideranca|add_class:"form-select" }}
             </div>
             <button type="submit" class="btn btn-primary">Salvar</button>
             <a href="{% url 'lideranca:contato_list' %}" class="btn btn-secondary">Cancelar</a>
@@ -95,44 +93,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.6/dist/inputmask.min.js"></script>
 
-  <script>
-        // Garantir que o Inputmask seja aplicado após o carregamento da página
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Aplicar máscara de CPF
-            Inputmask("99999-999").mask("#id_cep");
+			Inputmask("99999-999").mask("#id_cep");
+			Inputmask("(99) 99999-9999").mask("#id_telefone");
+			Inputmask("99/99/9999").mask("#id_data_nascimento");
+		});
 
-
-            // Aplicar máscara de telefone
-            Inputmask("(99) 99999-9999").mask("#id_telefone");
-
-            // Aplicar máscara de data
-            Inputmask("99/99/9999").mask("#id_data_nascimento");
-        });
-
-        document.getElementById('id_cep').addEventListener('blur', function() {
-            var cep = this.value.replace(/\D/g, '');
-            if (cep.length === 8) {
-                fetch(`https://viacep.com.br/ws/${cep}/json/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.erro) {
-                            document.getElementById('id_logradouro').value = data.logradouro;
-                            document.getElementById('id_bairro').value = data.bairro;
-                            document.getElementById('id_cidade').value = data.localidade;
-                            document.getElementById('id_uf').value = data.uf;
-                        } else {
-                            alert('CEP não encontrado.');
-                        }
-                    })
-                    .catch(error => console.error('Erro ao buscar CEP:', error));
-            }
-        });
+		document.getElementById('id_cep').addEventListener('blur', function() {
+			var cep = this.value.replace(/\D/g, '');
+			if (cep.length === 8) {
+				fetch(`https://viacep.com.br/ws/${cep}/json/`)
+					.then(response => response.json())
+					.then(data => {
+						console.log('Dados da API:', data);  // Verifique a resposta da API
+						if (!data.erro) {
+							document.getElementById('id_logradouro').value = data.logradouro;
+							document.getElementById('id_bairro').value = data.bairro;
+							document.getElementById('id_cidade').value = data.localidade;
+							document.getElementById('id_uf').value = data.uf;
+						} else {
+							alert('CEP não encontrado.');
+						}
+					})
+					.catch(error => console.error('Erro ao buscar CEP:', error));
+			}
+		});
     </script>
-</body>
-</html>
-</title>
-</head>
-<body>
-
 </body>
 </html>
