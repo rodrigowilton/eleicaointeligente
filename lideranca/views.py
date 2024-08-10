@@ -1,6 +1,24 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Lideranca, Contato
 from .forms import LiderancaForm, ContatoForm
+from datetime import datetime
+from .utils import aniversariantes_do_mes_atual_e_seguinte
+
+
+def relatorio_aniversariantes(request):
+    liderancas, contatos = aniversariantes_do_mes_atual_e_seguinte()
+    hoje = datetime.now()
+    mes_atual = hoje.month
+    mes_seguinte = mes_atual + 1 if mes_atual < 12 else 1
+    
+    context = {
+        'liderancas': liderancas,
+        'contatos': contatos,
+        'mes_atual': mes_atual,
+        'mes_seguinte': mes_seguinte,
+    }
+    
+    return render(request, 'relatorio_aniversariantes.html', context)
 
 def lideranca_list(request):
     search_query = request.GET.get('search', '')
