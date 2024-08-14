@@ -1,5 +1,6 @@
 from django.db import models
 from candidato.models import StatusContato  # Importando o modelo StatusContato
+from coordenador.models import Coordenador  # Importando o modelo Coordenador
 
 
 class Lideranca(models.Model):
@@ -21,6 +22,7 @@ class Lideranca(models.Model):
     uf = models.CharField(max_length=2)
     email = models.EmailField()
     telefone = models.CharField(max_length=15)
+    coordenador = models.ForeignKey(Coordenador, on_delete=models.SET_NULL, null=True)
     usuario = models.CharField(max_length=150)
     senha = models.CharField(max_length=128)
 
