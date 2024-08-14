@@ -13,3 +13,8 @@ class CoordenadorForm(forms.ModelForm):
         widgets = {
             'senha': forms.PasswordInput(),
         }
+
+class LoginForm(forms.Form):
+    usuario = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'placeholder': 'Usuário'}))
+    senha = forms.CharField(max_length=128, widget=forms.PasswordInput(attrs={'placeholder': 'Senha'}))
+

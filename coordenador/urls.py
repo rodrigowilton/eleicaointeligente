@@ -5,7 +5,8 @@ from . import views
 app_name = 'coordenador'
 
 urlpatterns = [
-    path('principal1/', views.coordenador_main, name='coordenador_main'),
+    path('login/', views.login_view, name='login'),
+    path('principal1/<int:coordenador_id>/', views.coordenador_main, name='coordenador_main'),
     path('cordenadores', views.coordenador_list, name='coordenador_list'),
     path('novo/', views.coordenador_create, name='coordenador_create'),
     path('<int:pk>/editar/', views.coordenador_update, name='coordenador_edit'),  # URL para edição

@@ -3,28 +3,45 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Coordenador
 from .forms import CoordenadorForm
 from lideranca.models import Contato
+from django.contrib import messages
 
 import base64
 import io
 import matplotlib.pyplot as plt
 import numpy as np
 from django.db.models import Count
+from .forms import LoginForm
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            usuario = form.cleaned_data['usuario']
+            senha = form.cleaned_data['senha']
+            try:
+                coordenador = Coordenador.objects.get(usuario=usuario, senha=senha)
+                # Armazenar o ID do coordenador na sessão
+                request.session['coordenador_id'] = coordenador.id
+                return redirect('coordenador:coordenador_main', coordenador_id=coordenador.id)  # Redireciona para a tela principal1
+            except Coordenador.DoesNotExist:
+                messages.error(request, "Usuário ou senha incorretos.")
+    else:
+        form = LoginForm()
+    return render(request, 'coordenador/login.html', {'form': form})
 
 
-def coordenador_main(request):
-    contact_graph, total_contacts = generate_contact_graph()
-    city_graph, _ = generate_city_graph()  # Inclua o total_contatos se necessário
+def coordenador_main(request, coordenador_id):
+    coordenador = get_object_or_404(Coordenador, pk=coordenador_id)
 
-    # Obtenha todos os contatos
-    contatos = Contato.objects.all()
-
-    # Calcule o total de contatos
+    # Filtre os contatos pela liderança associada ao coordenador
+    contatos = Contato.objects.filter(lideranca__coordenador=coordenador)
     total_contatos = contatos.count()
+
+    contact_graph, _ = generate_contact_graph(contatos)
+    city_graph, _ = generate_city_graph(contatos)
 
     # Calcule a contagem de contatos por bairro
     bairros_contagem = contatos.values('bairro').annotate(contagem=Count('bairro'))
-
-    # Calcule a porcentagem de contatos por bairro
     bairros_percentuais = [
         {
             'nome': bairro['bairro'],
@@ -36,8 +53,6 @@ def coordenador_main(request):
 
     # Calcule a contagem de contatos por cidade
     cidades_contagem = contatos.values('cidade').annotate(contagem=Count('cidade'))
-
-    # Calcule a porcentagem de contatos por cidade
     cidades_percentuais = [
         {
             'nome': cidade['cidade'],
@@ -50,13 +65,12 @@ def coordenador_main(request):
     return render(request, 'coordenador/principal1.html', {
         'contact_graph': contact_graph,
         'city_graph': city_graph,
-        'total_contacts': total_contacts,
+        'total_contacts': total_contatos,
         'bairros': sorted(bairros_percentuais, key=lambda x: x['percentual'], reverse=True),
         'cidades': sorted(cidades_percentuais, key=lambda x: x['percentual'], reverse=True),
     })
 
-def generate_contact_graph():
-    contatos = Contato.objects.all()
+def generate_contact_graph(contatos):
     total_contatos = contatos.count()
 
     if total_contatos == 0:
@@ -89,8 +103,7 @@ def generate_contact_graph():
 
     return image_base64, total_contatos
 
-def generate_city_graph():
-    contatos = Contato.objects.all()
+def generate_city_graph(contatos):
     total_contatos = contatos.count()
 
     if total_contatos == 0:
@@ -126,6 +139,20 @@ def generate_city_graph():
     buf.close()
 
     return image_base64, total_contatos
+
+def principal1_view(request):
+    coordenador_id = request.session.get('coordenador_id')
+    if coordenador_id is None:
+        return redirect('login')  # Redireciona para a página de login se não estiver autenticado
+
+    coordenador = Coordenador.objects.get(id=coordenador_id)
+    # Aqui, você pode incluir a lógica para obter dados específicos para a página principal1
+
+    context = {
+        'coordenador': coordenador,
+        # Adicione mais dados ao contexto conforme necessário
+    }
+    return render(request, 'coordenador/principal1.html', context)
 
 def coordenador_create(request):
     if request.method == 'POST':
