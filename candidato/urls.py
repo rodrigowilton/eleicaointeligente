@@ -2,11 +2,15 @@
 from django.urls import path
 from . import views
 from .views import send_whatsapp_message, mark_all_contacts, mark_selected_contacts
+from .views import login_view
 
 app_name = 'candidato'
 
 urlpatterns = [
-    path('', views.index, name='index'),  # Index page for candidato
+    path('login/', views.login_view, name='login'),
+    path('', views.index, name='index'),  # Defina sua view para a página principal do candidato
+
+    #path('principal/<intcandidato_id>/', views.candidato_list, name='candidato_list'),
     path('candidatos/', views.candidato_list, name='candidato_list'),
     path('candidato/create/', views.candidato_create, name='candidato_create'),
     path('candidato/edit/<int:pk>/', views.candidato_edit, name='candidato_edit'),

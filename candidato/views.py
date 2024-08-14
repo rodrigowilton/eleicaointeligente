@@ -15,9 +15,36 @@ import logging
 import time
 import pyautogui
 import matplotlib.pyplot as plt
+from django.contrib.auth import authenticate, login as auth_login
+from .forms import LoginForm
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('usuario')
+        password = request.POST.get('senha')
+
+        try:
+            candidato = Candidato.objects.get(usuario=username)
+            if candidato.senha == password:  # Verifica se a senha corresponde
+                # Sucesso no login
+                request.session['candidato_id'] = candidato.id  # Armazena o ID do candidato na sessão
+                return redirect('candidato:index')  # Redireciona para a view principal do candidato
+            else:
+                messages.error(request, 'Senha incorreta.')
+        except Candidato.DoesNotExist:
+            messages.error(request, 'Usuário não encontrado.')
+
+    return render(request, 'candidato/login.html')
+
 
 
 logger = logging.getLogger(__name__)
+
+
+def principal_view(request):
+    return render(request, 'principal.html')
+
 
 def send_whatsapp_message(request):
     if request.method == 'POST':
