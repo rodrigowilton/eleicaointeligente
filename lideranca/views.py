@@ -9,6 +9,7 @@ from .forms import QRCodeForm
 from django.urls import reverse
 from .models import Lideranca, Coordenador
 from lideranca.models import Contato
+from .models import Lideranca, Coordenador, Contato
 
 from .forms import LoginForm
 from django.contrib import messages
@@ -254,22 +255,41 @@ def lideranca_edit(request, pk):
 
 
 def contato_list(request):
-    # Obtendo a liderança logada da sessão
+    # Obtém o ID do usuário logado
     lideranca_id = request.session.get('lideranca_id')
-    lideranca = get_object_or_404(Lideranca, pk=lideranca_id)
+    coordenador_id = request.session.get('coordenador_id')
+    candidato_id = request.session.get('candidato_id')
 
-    # Filtrando contatos vinculados à liderança logada
-    contatos = Contato.objects.filter(lideranca=lideranca)
+    if lideranca_id:
+        # Usuário é da Liderança
+        lideranca = get_object_or_404(Lideranca, pk=lideranca_id)
+        contatos = Contato.objects.filter(lideranca=lideranca)
+    elif coordenador_id:
+        # Usuário é Coordenador
+        coordenador = get_object_or_404(Coordenador, pk=coordenador_id)
+        contatos = Contato.objects.filter(coordenador=coordenador)
+    elif candidato_id:
+        # Usuário é Candidato
+        contatos = Contato.objects.all()
+    else:
+        # Usuário não autenticado
+        messages.error(request, "Usuário não autenticado.")
+        return redirect('login')  # Redireciona para a página de login ou outra apropriada
 
-    # Aplicando a pesquisa, se houver
-    search_query = request.GET.get('search', '')
-    if search_query:
-        contatos = contatos.filter(nome__icontains=search_query)
+    # Aplicar filtro de pesquisa se houver, exceto para o tipo Candidato
+    if candidato_id:
+        # Para candidatos, não aplicamos filtro de pesquisa
+        pass
+    else:
+        search_query = request.GET.get('search', '')
+        if search_query:
+            contatos = contatos.filter(nome__icontains=search_query)
 
     context = {
         'contatos': contatos,
     }
     return render(request, 'lideranca/contato_list.html', context)
+
 
 
 def contato_create(request):

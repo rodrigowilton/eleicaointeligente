@@ -15,27 +15,43 @@ import logging
 import time
 import pyautogui
 import matplotlib.pyplot as plt
-from django.contrib.auth import authenticate, login as auth_login
+# Importando os modelos de seus respectivos arquivos
+from lideranca.models import Lideranca, Coordenador  # Se Lideranca e Coordenador estão em lideranca.models
+from candidato.models import Candidato  # Se Candidato está em candidato.models
 from .forms import LoginForm
 
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('usuario')
-        password = request.POST.get('senha')
-
-        try:
-            candidato = Candidato.objects.get(usuario=username)
-            if candidato.senha == password:  # Verifica se a senha corresponde
-                # Sucesso no login
-                request.session['candidato_id'] = candidato.id  # Armazena o ID do candidato na sessão
-                return redirect('candidato:index')  # Redireciona para a view principal do candidato
-            else:
-                messages.error(request, 'Senha incorreta.')
-        except Candidato.DoesNotExist:
-            messages.error(request, 'Usuário não encontrado.')
-
-    return render(request, 'candidato/login.html')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            usuario = form.cleaned_data['usuario']
+            senha = form.cleaned_data['senha']
+            # Tenta autenticar como Candidato
+            try:
+                candidato = Candidato.objects.get(usuario=usuario, senha=senha)
+                # Armazena o ID do candidato na sessão
+                request.session['candidato_id'] = candidato.id
+                return redirect('candidato:index')  # Redireciona para a lista de contatos
+            except Candidato.DoesNotExist:
+                messages.error(request, "Usuário ou senha incorretos.")
+            # Tenta autenticar como Liderança
+            try:
+                lideranca = Lideranca.objects.get(usuario=usuario, senha=senha)
+                request.session['lideranca_id'] = lideranca.id
+                return redirect('lideranca:lideranca_main', lideranca_id=lideranca.id)
+            except Lideranca.DoesNotExist:
+                messages.error(request, "Usuário ou senha incorretos.")
+            # Tenta autenticar como Coordenador
+            try:
+                coordenador = Coordenador.objects.get(usuario=usuario, senha=senha)
+                request.session['coordenador_id'] = coordenador.id
+                return redirect('lideranca:lideranca_list')
+            except Coordenador.DoesNotExist:
+                messages.error(request, "Usuário ou senha incorretos.")
+    else:
+        form = LoginForm()
+    return render(request, 'coordenador/login.html', {'form': form})
 
 
 
