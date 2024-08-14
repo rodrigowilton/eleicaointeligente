@@ -15,9 +15,9 @@
             </svg>
             Voltar para Principal
         </button>
-            <a href="{% url 'lideranca:lideranca_create' %}" class="btn btn-primary mb-3">Adicionar Nova liderança</a>
+        <a href="{% url 'lideranca:lideranca_create' %}" class="btn btn-primary mb-3">Adicionar Nova liderança</a>
 
-                <!-- Formulário de Pesquisa -->
+        <!-- Formulário de Pesquisa -->
         <form method="GET" class="mb-3">
             <div class="input-group">
                 <input type="text" name="search" class="form-control" placeholder="Pesquisar Liderança" value="{{ request.GET.search }}">
@@ -41,6 +41,10 @@
                         <td>
                             <a href="{% url 'lideranca:lideranca_edit' lideranca.pk %}" class="btn btn-warning btn-sm">Editar</a>
                         </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3">Nenhuma liderança encontrada.</td>
                     </tr>
                 {% endfor %}
             </tbody>

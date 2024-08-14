@@ -7,6 +7,8 @@ from .forms import RelatorioForm
 from django.db.models import Count
 from .forms import QRCodeForm
 from django.urls import reverse
+from .models import Lideranca, Coordenador
+
 
 
 def generate_qr_code(request):
@@ -75,13 +77,24 @@ def relatorio_aniversariantes(request):
     
     return render(request, 'relatorio_aniversariantes.html', context)
 
+
 def lideranca_list(request):
+    # Obtendo o coordenador atual da sessão
+    coordenador_id = request.session.get('coordenador_id')
+    coordenador = get_object_or_404(Coordenador, pk=coordenador_id)
+
+    # Filtrando lideranças vinculadas ao coordenador
+    liderancas = Lideranca.objects.filter(coordenador=coordenador)
+
+    # Aplicando a pesquisa, se houver
     search_query = request.GET.get('search', '')
     if search_query:
-        liderancas = Lideranca.objects.filter(nome__icontains=search_query)
-    else:
-        liderancas = Lideranca.objects.all()
-    return render(request, 'lideranca/lideranca_list.html', {'liderancas': liderancas})
+        liderancas = liderancas.filter(nome__icontains=search_query)
+
+    context = {
+        'liderancas': liderancas,
+    }
+    return render(request, 'lideranca/lideranca_list.html', context)
 
 
 def lideranca_create(request):
@@ -105,9 +118,28 @@ def lideranca_edit(request, pk):
         form = LiderancaForm(instance=lideranca)
     return render(request, 'lideranca/lideranca_form.html', {'form': form})
 
+
 def contato_list(request):
-    contatos = Contato.objects.all()
-    return render(request, 'lideranca/contato_list.html', {'contatos': contatos})
+    # Obtendo o coordenador atual da sessão
+    coordenador_id = request.session.get('coordenador_id')
+    coordenador = get_object_or_404(Coordenador, pk=coordenador_id)
+
+    # Obtendo o líder associado ao coordenador
+    liderancas = Lideranca.objects.filter(coordenador=coordenador)
+    lider_ids = liderancas.values_list('id', flat=True)
+
+    # Filtrando contatos vinculados ao líder
+    contatos = Contato.objects.filter(lideranca__in=lider_ids)
+
+    # Aplicando a pesquisa, se houver
+    search_query = request.GET.get('search', '')
+    if search_query:
+        contatos = contatos.filter(nome__icontains=search_query)
+
+    context = {
+        'contatos': contatos,
+    }
+    return render(request, 'lideranca/contato_list.html', context)
 
 
 def contato_create(request):
