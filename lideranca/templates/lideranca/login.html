@@ -1,0 +1,44 @@
+<!-- coordenador/login.html -->
+{% extends 'base_generic2.html' %}
+{% load static %}
+{% block content %}
+<main class="col-md-8 col-lg-8 ms-md-auto p-4">
+    <div class="sticky-top" style="text-align: center;">
+        <img src="{% static 'eleicoes.png' %}" alt="Eleição" class="img-fluid fixed-image">
+    </div>
+
+    <!-- Adicionando uma margem superior ao container de login e usando flexbox para centralizar -->
+    <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 50vh;">
+        <div class="row justify-content-center align-items-center" style="width: 80%; height: auto;">
+            <div class="col-md-8 col-lg-6 col-xl-4">
+                <div class="card shadow-sm">
+                    <div class="card-header text-center">
+                        <h2>Login Liderança</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="{{ form.usuario.id_for_label }}" class="form-label">Usuário</label>
+                                <input type="text" name="usuario" id="{{ form.usuario.id_for_label }}" class="form-control" placeholder="Usuário" value="{{ form.usuario.value }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.senha.id_for_label }}" class="form-label">Senha</label>
+                                <input type="password" name="senha" id="{{ form.senha.id_for_label }}" class="form-control" placeholder="Senha" value="{{ form.senha.value }}">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                        </form>
+                        {% if messages %}
+                            <div class="alert alert-danger mt-3">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

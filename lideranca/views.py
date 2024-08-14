@@ -8,8 +8,142 @@ from django.db.models import Count
 from .forms import QRCodeForm
 from django.urls import reverse
 from .models import Lideranca, Coordenador
+from lideranca.models import Contato
+
+from .forms import LoginForm
+from django.contrib import messages
+import base64
+import io
+import matplotlib.pyplot as plt
+import numpy as np
+
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            usuario = form.cleaned_data['usuario']
+            senha = form.cleaned_data['senha']
+            try:
+                lideranca = Lideranca.objects.get(usuario=usuario, senha=senha)
+                # Armazenar o ID da liderança na sessão
+                request.session['lideranca_id'] = lideranca.id
+                return redirect('lideranca:lideranca_main', lideranca_id=lideranca.id)  # Redireciona para a tela principal
+            except Lideranca.DoesNotExist:
+                messages.error(request, "Usuário ou senha incorretos.")
+    else:
+        form = LoginForm()
+    return render(request, 'lideranca/login.html', {'form': form})
 
 
+def lideranca_main(request, lideranca_id):
+    lideranca = get_object_or_404(Lideranca, pk=lideranca_id)
+
+    # Filtre os contatos pela liderança associada ao coordenador
+    contatos = Contato.objects.filter(lideranca=lideranca)
+    total_contatos = contatos.count()
+
+    contact_graph, _ = generate_contact_graph(contatos)
+    city_graph, _ = generate_city_graph(contatos)
+
+    # Calcule a contagem de contatos por bairro
+    bairros_contagem = contatos.values('bairro').annotate(contagem=Count('bairro'))
+    bairros_percentuais = [
+        {
+            'nome': bairro['bairro'],
+            'contagem': bairro['contagem'],
+            'percentual': (bairro['contagem'] / total_contatos) * 100
+        }
+        for bairro in bairros_contagem
+    ]
+
+    # Calcule a contagem de contatos por cidade
+    cidades_contagem = contatos.values('cidade').annotate(contagem=Count('cidade'))
+    cidades_percentuais = [
+        {
+            'nome': cidade['cidade'],
+            'contagem': cidade['contagem'],
+            'percentual': (cidade['contagem'] / total_contatos) * 100
+        }
+        for cidade in cidades_contagem
+    ]
+
+    return render(request, 'lideranca/principal2.html', {
+        'contact_graph': contact_graph,
+        'city_graph': city_graph,
+        'total_contacts': total_contatos,
+        'bairros': sorted(bairros_percentuais, key=lambda x: x['percentual'], reverse=True),
+        'cidades': sorted(cidades_percentuais, key=lambda x: x['percentual'], reverse=True),
+    })
+
+def generate_contact_graph(contatos):
+    total_contatos = contatos.count()
+
+    if total_contatos == 0:
+        return "", total_contatos
+
+    lideranca_counts = contatos.values('lideranca__nome').annotate(count=Count('lideranca'))
+    labels = [l['lideranca__nome'] for l in lideranca_counts]
+    sizes = [l['count'] for l in lideranca_counts]
+
+    # Gerar cores distintas
+    num_colors = len(labels)
+    colors = plt.cm.viridis(np.linspace(0, 1, num_colors))
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    bars = ax.bar(labels, sizes, color=colors, edgecolor='black')
+
+    ax.set_xlabel('Liderança')
+    ax.set_ylabel('Contagem')
+    ax.set_title('Contagem de Contatos por Liderança')
+    ax.set_xticklabels(labels, rotation=45, ha='right')
+
+    # Ajuste de layout
+    plt.tight_layout()
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    buf.seek(0)
+    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    buf.close()
+
+    return image_base64, total_contatos
+
+def generate_city_graph(contatos):
+    total_contatos = contatos.count()
+
+    if total_contatos == 0:
+        return "", total_contatos
+
+    cidades_contagem = contatos.values('cidade').annotate(contagem=Count('cidade'))
+    cidades = [cidade['cidade'] for cidade in cidades_contagem]
+    contagens = [cidade['contagem'] for cidade in cidades_contagem]
+
+    # Gerar cores distintas
+    num_colors = len(cidades)
+    colors = plt.cm.tab10(np.linspace(0, 1, num_colors))
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    bars = ax.bar(cidades, contagens, color=colors, edgecolor='black')
+
+    ax.set_xlabel('Cidade')
+    ax.set_ylabel('Número de Contatos')
+    ax.set_title('Número de Contatos por Cidade')
+
+    # Adiciona valores acima das barras
+    for bar in bars:
+        yval = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width() / 2.0, yval, int(yval), va='bottom', ha='center')
+
+    # Ajuste de layout
+    plt.tight_layout()
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    buf.seek(0)
+    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    buf.close()
+
+    return image_base64, total_contatos
 
 def generate_qr_code(request):
     if request.method == 'POST':
@@ -120,16 +254,12 @@ def lideranca_edit(request, pk):
 
 
 def contato_list(request):
-    # Obtendo o coordenador atual da sessão
-    coordenador_id = request.session.get('coordenador_id')
-    coordenador = get_object_or_404(Coordenador, pk=coordenador_id)
+    # Obtendo a liderança logada da sessão
+    lideranca_id = request.session.get('lideranca_id')
+    lideranca = get_object_or_404(Lideranca, pk=lideranca_id)
 
-    # Obtendo o líder associado ao coordenador
-    liderancas = Lideranca.objects.filter(coordenador=coordenador)
-    lider_ids = liderancas.values_list('id', flat=True)
-
-    # Filtrando contatos vinculados ao líder
-    contatos = Contato.objects.filter(lideranca__in=lider_ids)
+    # Filtrando contatos vinculados à liderança logada
+    contatos = Contato.objects.filter(lideranca=lideranca)
 
     # Aplicando a pesquisa, se houver
     search_query = request.GET.get('search', '')

@@ -2,6 +2,10 @@ from django import forms
 from .models import Lideranca, Contato
 from candidato.models import StatusContato  # Importando o modelo Status
 
+class LoginForm(forms.Form):
+    usuario = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'placeholder': 'Usuário'}))
+    senha = forms.CharField(max_length=128, widget=forms.PasswordInput(attrs={'placeholder': 'Senha'}))
+
 
 class QRCodeForm(forms.Form):
     link = forms.ChoiceField(
