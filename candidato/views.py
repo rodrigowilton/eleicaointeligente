@@ -227,13 +227,44 @@ def generate_city_graph():
 
 def index(request):
     contact_graph, total_contacts = generate_contact_graph()
-    city_graph, _ = generate_city_graph()  # Inclua o total_contatos se necessário
+    city_graph, _ = generate_city_graph()
 
     # Obtenha todos os contatos
     contatos = Contato.objects.all()
 
     # Calcule o total de contatos
     total_contatos = contatos.count()
+
+    # Obtenha a meta do sistema
+    meta = Meta.objects.first()  # Supondo que há apenas uma instância de Meta
+    if meta:
+        meta_do_sistema = meta.meta_do_sistema
+    else:
+        meta_do_sistema = 0
+
+    # Calcule a porcentagem de contatos em relação à meta
+    if meta_do_sistema > 0:
+        percentual = (total_contatos / meta_do_sistema) * 100
+    else:
+        percentual = 0
+
+    # Gerar gráfico da porcentagem de contatos em relação à meta
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.bar(['Contatos vs Meta'], [percentual], color='skyblue')
+    ax.set_ylabel('Percentual (%)')
+    ax.set_title('Percentual de Contatos em Relação à Meta do Sistema')
+
+    # Adicionar o valor acima da barra
+    ax.text(0, percentual, f'{percentual:.2f}%', ha='center', va='bottom')
+
+    # Ajuste de layout
+    plt.tight_layout()
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    buf.seek(0)
+    graph_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    buf.close()
 
     # Calcule a contagem de contatos por bairro
     bairros_contagem = contatos.values('bairro').annotate(contagem=Count('bairro'))
@@ -264,7 +295,8 @@ def index(request):
     return render(request, 'principal.html', {
         'contact_graph': contact_graph,
         'city_graph': city_graph,
-        'total_contacts': total_contacts,
+        'total_contacts': total_contatos,
+        'percentual_graph': graph_base64,  # Gráfico da porcentagem
         'bairros': sorted(bairros_percentuais, key=lambda x: x['percentual'], reverse=True),
         'cidades': sorted(cidades_percentuais, key=lambda x: x['percentual'], reverse=True),
     })

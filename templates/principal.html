@@ -84,6 +84,18 @@
             {% else %}
                 <p class="text-muted">Nenhum gráfico disponível.</p>
             {% endif %}
+
+            <h2 class="mb-4 mt-5 text-light">Percentual de Contatos</h2>
+            {% if percentual_graph %}
+                <div class="text-center">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#percentualGraphModal">
+                        <img src="data:image/png;base64,{{ percentual_graph }}" alt="Percentual de Contatos" class="img-fluid" style="width: 100%;">
+                    </a>
+                    <p class="mt-3 text-light">Total de Contatos: {{ total_contacts }}</p>
+                </div>
+            {% else %}
+                <p class="text-muted">Nenhum gráfico disponível.</p>
+            {% endif %}
         </aside>
     </div>
 </div>
@@ -112,6 +124,20 @@
             </div>
             <div class="modal-body">
                 <img src="data:image/png;base64,{{ city_graph }}" alt="Gráfico de Cidades" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="percentualGraphModal" tabindex="-1" aria-labelledby="percentualGraphModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="percentualGraphModalLabel">Percentual de Contatos em Relação à Meta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="data:image/png;base64,{{ percentual_graph }}" alt="Percentual de Contatos" class="img-fluid">
             </div>
         </div>
     </div>
