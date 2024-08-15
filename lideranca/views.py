@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Lideranca, Contato
 from .forms import LiderancaForm, ContatoForm
 from datetime import datetime
 from .utils import aniversariantes_do_mes_atual_e_seguinte
@@ -7,8 +6,6 @@ from .forms import RelatorioForm
 from django.db.models import Count
 from .forms import QRCodeForm
 from django.urls import reverse
-from .models import Lideranca, Coordenador
-from lideranca.models import Contato
 from .models import Lideranca, Coordenador, Contato
 
 from .forms import LoginForm
