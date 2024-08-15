@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from .views import generate_qr_code
+from .models import Coordenador  # Ensure you're using the correct model
+
 
 
 app_name = 'lideranca'
@@ -17,4 +19,6 @@ urlpatterns = [
     path('contato/', views.contato_list, name='contato_list'),
     path('contato/add/', views.contato_create, name='contato_create'),
     path('contato/<int:pk>/edit/', views.contato_edit, name='contato_edit'),
+    path('', views.lideranca_list, name = 'lideranca_list'),
+
 ]
